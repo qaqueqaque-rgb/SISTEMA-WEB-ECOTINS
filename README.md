@@ -56,9 +56,9 @@ SISTEMA_WEB_ECOTINS/
 │   ├── solicitacoes.html
 │   ├── solicitar.html
 │   ├── style.css
-│
-├── README.md
-└── requirements.txt
+
+└── README.md
+ 
 ```
 
 ---
