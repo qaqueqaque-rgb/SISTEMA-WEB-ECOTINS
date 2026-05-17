@@ -1,1 +1,251 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>EcoTins - Painel do Admin</title>
+</head>
+<body>
 
+    <header class="navbar" style="border-bottom: 2px solid #cf1322;">
+        <div class="logo">
+            <img src="{{ url_for('static', filename='assets/logo_ecotins.png') }}" alt="EcoTins Logo">
+        </div>
+        <nav>
+            <a href="/" class="nav-btn">VER SITE PÚBLICO</a>
+            <a href="/sair" class="nav-btn">SAIR DO PAINEL</a>
+        </nav>
+    </header>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="alert-container">
+          {% for message in messages %}
+            <div class="alert alert-success">
+                <span class="alert-icon">✓</span>
+                <span class="alert-text">{{ message }}</span>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <main class="container">
+        <div class="banner" style="flex-direction: column; align-items: stretch; text-align: left;">
+            <h2>Painel de Controle Geral (Admin)</h2>
+            <p style="color: #718096; margin-bottom: 25px; font-size: 15px;">
+                Gerencie o banco de dados, usuários e triagem de resíduos da plataforma:
+            </p>
+
+            <div class="admin-cards-grid">
+                <div class="admin-card card-verde">
+                    <h3>{{ total_ativas }}</h3>
+                    <p>Coletas Ativas</p>
+                </div>
+                <div class="admin-card card-azul">
+                    <h3>{{ total_usuarios }}</h3>
+                    <p>Usuários Cadastrados</p>
+                </div>
+                <div class="admin-card card-vermelho">
+                    <h3>{{ total_excluidas }}</h3>
+                    <p>Itens na Lixeira</p>
+                </div>
+            </div>
+
+            <div class="admin-tabs">
+                <button class="tab-btn active" onclick="alternarAba('aba-solicitacoes')">📋 Solicitações Ativas</button>
+                <button class="tab-btn" onclick="alternarAba('aba-usuarios')">👥 Usuários do Sistema</button>
+                <button class="tab-btn" onclick="alternarAba('aba-lixeira')">🗑️ Lixeira (Excluídas)</button>
+            </div>
+
+            <div id="aba-solicitacoes" class="tab-content active">
+                <div class="tabela-container">
+                    <table class="tabela-coleta">
+                        <thead>
+                            <tr>
+                                <th>Protocolo</th>
+                                <th>ID User</th>
+                                <th>Material</th>
+                                <th>Descrição</th>
+                                <th>Data Pedido</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if solicitacoes %}
+                                {% for item in solicitacoes %}
+                                <tr>
+                                    <td class="col-local">#{{ item['id'] }}</td>
+                                    <td>{{ item['usuario_id'] }}</td>
+                                    <td><strong>{{ item['tipo_residuo'] }}</strong></td>
+                                    <td style="font-size: 13px;">{{ item['descricao'] }}</td>
+                                    <td>{{ item['data_pedido'] }}</td>
+                                    <td><span class="status-tag status-aguardando">{{ item['status'] }}</span></td>
+                                </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr><td colspan="6" style="text-align: center; padding: 20px;">Nenhuma coleta ativa pendente.</td></tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="aba-usuarios" class="tab-content">
+                <div class="tabela-container">
+                    <table class="tabela-coleta">
+                        <thead>
+                            <tr>
+                                <th>Código (ID)</th>
+                                <th>Nome Completo</th>
+                                <th>E-mail de Acesso</th>
+                                <th>Nível de Acesso</th>
+                                <th style="text-align: center;">Ações Gestão</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if usuarios %}
+                                {% for user in usuarios %}
+                                <tr>
+                                    <td class="col-local">#{{ user['id'] }}</td>
+                                    <td><strong>{{ user['nome'] }}</strong></td>
+                                    <td>{{ user['email'] }}</td>
+                                    <td>
+                                        {% if user['tipo'] == 'admin' %}
+                                            <span class="status-tag" style="background-color: #fee2e2; color: #991b1b; font-weight: bold; padding: 4px 8px; border-radius: 4px;">Administrador</span>
+                                        {% else %}
+                                            <span class="status-tag" style="background-color: #f1f5f9; color: #475569; font-weight: bold; padding: 4px 8px; border-radius: 4px;">Usuário Comum</span>
+                                        {% endif %}
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <button type="button" onclick="abrirModalEdicao('{{ user['id'] }}')" style="margin-right: 6px; border: 1px solid #adc6ff; background-color: #f0f5ff; color: #0050b3; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 13px;">
+                                            ✏️ Editar
+                                        </button>
+
+                                        <form action="/admin/usuarios/excluir" method="POST" onsubmit="return confirm('ATENÇÃO: Deletar esta conta removerá o acesso definitivo deste usuário. Confirmar exclusão?');" style="display: inline;">
+                                            <input type="hidden" name="id_usuario" value="{{ user['id'] }}">
+                                            <button type="submit" style="background-color: #fff1f0; color: #cf1322; border: 1px solid #ffa39e; padding: 5px 10px; border-radius: 4px; font-size: 13px; font-weight: bold; cursor: pointer;">
+                                                🗑️ Excluir
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr><td colspan="5" style="text-align: center; padding: 20px;">Nenhum usuário cadastrado.</td></tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="aba-lixeira" class="tab-content">
+                <div class="tabela-container">
+                    <table class="tabela-coleta">
+                        <thead>
+                            <tr>
+                                <th>Prot. Original</th>
+                                <th>ID User</th>
+                                <th>Material</th>
+                                <th>Descrição</th>
+                                <th>Data do Pedido</th>
+                                <th>Data de Exclusão</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if excluidos %}
+                                {% for item in excluidos %}
+                                <tr>
+                                    <td class="col-local">#{{ item['id'] }}</td>
+                                    <td>{{ item['usuario_id'] }}</td>
+                                    <td>{{ item['tipo_residuo'] }}</td>
+                                    <td style="font-size: 13px;">{{ item['descricao'] }}</td>
+                                    <td>{{ item['data_pedido'] }}</td>
+                                    <td style="color: #cf1322; font-weight: bold;">{{ item['data_exclusao'] }}</td>
+                                </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr><td colspan="6" style="text-align: center; padding: 30px;">A lixeira está limpa!</td></tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <div id="modal-editar-usuario" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); z-index: 9999; align-items: center; justify-content: center;">
+        <div style="background-color: #ffffff; padding: 30px; border-radius: 8px; width: 100%; max-width: 450px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); box-sizing: border-box;">
+            <h3 style="margin-top: 0; margin-bottom: 5px; color: #2d3436;">Modificar Credenciais</h3>
+            <p style="color: #718096; font-size: 14px; margin-bottom: 20px;">Altere as informações cadastrais e privilégios do usuário.</p>
+            
+            <form action="/admin/usuarios/salvar" method="POST">
+                <input type="hidden" id="edit-id" name="id_usuario">
+
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; font-weight: bold; margin-bottom: 5px; font-size: 14px; color: #4a5568;">Nome Completo</label>
+                    <input type="text" id="edit-nome" name="nome" required style="width: 100%; padding: 10px; border: 1px solid #cbd5e0; border-radius: 6px; box-sizing: border-box; font-size: 14px;">
+                </div>
+
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; font-weight: bold; margin-bottom: 5px; font-size: 14px; color: #4a5568;">E-mail de Acesso</label>
+                    <input type="email" id="edit-email" name="email" required style="width: 100%; padding: 10px; border: 1px solid #cbd5e0; border-radius: 6px; box-sizing: border-box; font-size: 14px;">
+                </div>
+
+                <div style="margin-bottom: 25px;">
+                    <label style="display: block; font-weight: bold; margin-bottom: 5px; font-size: 14px; color: #4a5568;">Nível de Permissão</label>
+                    <select id="edit-tipo" name="tipo" style="width: 100%; padding: 10px; border: 1px solid #cbd5e0; border-radius: 6px; box-sizing: border-box; font-size: 14px; height: 42px; cursor: pointer;">
+                        <option value="user">Usuário Comum</option>
+                        <option value="admin">Administrador</option>
+                    </select>
+                </div>
+
+                <div style="display: flex; justify-content: flex-end; gap: 10px;">
+                    <button type="button" onclick="fecharModalEdicao()" style="background-color: #f1f5f9; color: #475569; border: 1px solid #cbd5e0; padding: 10px 18px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 14px;">Cancelar</button>
+                    <button type="submit" style="background-color: #cf1322; color: #ffffff; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 14px;">Salvar Mudanças</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>EcoTins Admin | Painel de Controle Integrado</p>
+    </footer>
+
+    <script>
+        function alternarAba(idAba) {
+            document.querySelectorAll('.tab-content').forEach(aba => aba.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            
+            document.getElementById(idAba).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+
+        function abrirModalEdicao(idUsuario) {
+            fetch('/admin/usuarios/dados/' + idUsuario)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.erro) {
+                        alert(data.erro);
+                    } else {
+                        document.getElementById('edit-id').value = data.id;
+                        document.getElementById('edit-nome').value = data.nome;
+                        document.getElementById('edit-email').value = data.email;
+                        document.getElementById('edit-tipo').value = data.tipo;
+
+                        // Corrigido aqui: Usando barra dupla // para comentário JavaScript
+                        document.getElementById('modal-editar-usuario').style.display = 'flex';
+                    }
+                })
+                .catch(err => alert("Erro ao carregar dados do usuário."));
+        }
+
+        function fecharModalEdicao() {
+            document.getElementById('modal-editar-usuario').style.display = 'none';
+        }
+    </script>
+
+</body>
+</html>
