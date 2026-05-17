@@ -35,7 +35,7 @@ SISTEMA_WEB_ECOTINS/
 │   ├── app.py
 │   ├── init_db.py
 │   ├── requirements.txt
-│   ├── ecotins.db
+│   ├── ecotins.db 
 │
 ├── WEB/
 │   ├── index.html
