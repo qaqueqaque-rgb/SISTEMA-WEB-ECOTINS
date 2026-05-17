@@ -1,11 +1,10 @@
-# SISTEMA-WEB-ECOTINS
-Sistema WEB para empresa ECOTINS - seminário tech 2026-1
-
-EcoTins - Sistema Web de Coleta de Resíduos
+# EcoTins - Sistema Web de Coleta de Resíduos
 
 Sistema web desenvolvido para gerenciamento de solicitações de coleta de resíduos recicláveis, criado para projeto acadêmico do curso de Tecnologia em Análise e Desenvolvimento de Sistemas (TADS).
 
-OBJETIVO DO SISTEMA
+---
+
+# Objetivo do Sistema
 
 O EcoTins tem como objetivo facilitar o gerenciamento de:
 
@@ -15,58 +14,86 @@ O EcoTins tem como objetivo facilitar o gerenciamento de:
 - Acompanhamento das solicitações
 - Organização de resíduos recicláveis
 
-TECNOLOGIAS UTILIZADAS
+---
 
-Backend
+# Tecnologias Utilizadas
+
+## Backend
+
 - Python
 - Flask
 - SQLite
 
-Frontend
+## Frontend
+
 - HTML5
 - CSS3
 - JavaScript
 
-ESTRUTURA DO PROJETO
+---
 
+# Estrutura do Projeto
+
+```txt
 SISTEMA_WEB_ECOTINS/
 │
 ├── BACKEND/
 │   ├── app.py
 │   ├── init_db.py
 │   ├── requirements.txt
-│   ├── ecotins.db 
+│   ├── ecotins.db
 │
 ├── WEB/
-│   ├── index.html
-│   ├── login.html
-│   ├── cadastro.html
-│   ├── solicitar.html
 │   ├── admin.html
-│   └── ...
+│   ├── admin_editar_usuario.html
+│   ├── admin_excluidas.html
+│   ├── admin_usuarios.html
+│   ├── cadastro.html
+│   ├── index.html
+│   ├── login.css
+│   ├── login.html
+│   ├── pontosdecoleta.html
+│   ├── solicitacoes.html
+│   ├── solicitar.html
+│   ├── style.css
 │
-└── README.md
+├── README.md
+└── requirements.txt
+```
 
-COMO EXECUTAR O SISTEMA
+---
 
-1. Instalar o Python
+# Como Executar o Sistema
 
-Download:
-https://www.python.org/downloads/ (recomendável a instalação 3.12 por maior compatibilidade)
+## 1. Instalar o Python
 
-2. Instalar as Dependências
+Download oficial:
 
-Abra o terminal na pasta BACKEND:
+https://www.python.org/downloads/
 
-cd BACKEND (se não tiver aberto na pasta do backend) (as vezes no termiinal fica a parte geral do sistema e não a parte do backend)
+Aconselhável utilizar a versão Python 3.12 por maior compatibilidade.
 
-Instale todas as dependências do projeto usando:
+---
 
+## 2. Abrir o Terminal na Pasta BACKEND
+
+Caso o terminal esteja na pasta raiz do sistema:
+
+```bash
+cd BACKEND
+```
+
+---
+
+## 3. Instalar as Dependências
+
+Instale todas as bibliotecas necessárias utilizando:
+
+```bash
 pip install -r requirements.txt
+```
 
-OBSERVAÇÃO
-
-O arquivo requirements.txt instala automaticamente:
+O arquivo `requirements.txt` instala automaticamente:
 
 - Flask
 - Flask Login
@@ -74,88 +101,130 @@ O arquivo requirements.txt instala automaticamente:
 
 Caso queira instalar manualmente:
 
+```bash
 pip install flask
 pip install flask-login
 pip install flask-sqlalchemy
+```
 
-3. Inicializar o Banco de Dados
+---
+
+# Inicializar o Banco de Dados
 
 Ainda dentro da pasta BACKEND execute:
 
+```bash
 python init_db.py
+```
 
 Esse comando irá:
 
 - Criar o banco SQLite
-- Criar as tabelas
+- Criar as tabelas do sistema
 - Criar o usuário administrador padrão
 
-IMPORTANTE
+---
 
-O terminal PRECISA estar dentro da pasta BACKEND (conforme foi informado acima) antes de executar:
+# IMPORTANTE
 
+O terminal PRECISA estar dentro da pasta `BACKEND` antes de executar:
+
+```bash
 python init_db.py
+```
 
 Exemplo correto:
 
+```bash
 cd BACKEND
 python init_db.py
+```
 
 Caso contrário, o SQLite pode criar o banco de dados na pasta errada, causando erros como:
 
+```txt
 sqlite3.OperationalError: no such table: usuarios
+```
 
-4. Executar o Sistema
+---
+
+# Executar o Sistema
 
 Ainda dentro da pasta BACKEND execute:
 
+```bash
 python app.py
+```
 
-ACESSO AO SISTEMA
+---
 
-Após executar o sistema, abra:
+# Acesso ao Sistema
 
+Após executar o sistema, abra no navegador:
+
+```txt
 http://127.0.0.1:5000
+```
 
-USUÁRIO ADMINISTRADOR
+---
 
-O sistema cria automaticamente um administrador padrão:
+# Usuário Administrador
 
-Login:
+O sistema cria automaticamente um administrador padrão.
+
+## Login
+
+```txt
 admin@ecotins.com
+```
 
-Senha:
+## Senha
+
+```txt
 admin123
+```
 
-FUNCIONALIDADES DO SISTEMA
+---
 
-Usuário Comum
+# Funcionalidades do Sistema
+
+## Usuário Comum
+
 - Cadastro
 - Login
 - Solicitar coleta
 - Visualizar solicitações
 - Excluir solicitações
 
-Administrador
+## Administrador
+
 - Visualizar usuários
 - Editar usuários
 - Excluir usuários
 - Visualizar solicitações
 - Painel administrativo
 
-BANCO DE DADOS
+---
+
+# Banco de Dados
 
 O sistema utiliza SQLite.
 
 Arquivo:
+
+```txt
 ecotins.db
+```
 
 Tabelas:
+
 - usuarios
 - solicitacoes
 - solicitacoes_excluidas
 
-SISTEMA DE SESSÃO
+---
+
+# Sistema de Sessão
 
 O sistema utiliza sessão Flask para:
 
@@ -163,7 +232,9 @@ O sistema utiliza sessão Flask para:
 - Controle administrativo
 - Proteção de páginas
 
-MELHORIAS FUTURAS
+---
+
+# Melhorias Futuras
 
 - Upload de imagens
 - Integração com mapas
@@ -173,10 +244,15 @@ MELHORIAS FUTURAS
 - Criptografia de senhas
 - Deploy em nuvem
 
-DESENVOLVIDO POR
+---
 
-Projeto acadêmico desenvolvido para o curso de Tecnologia em Análise e Desenvolvimento de Sistemas (TADS).
+# Desenvolvido por
 
-LICENÇA
+Projeto acadêmico desenvolvido pelos discentes ELISEU TAVARES DE LIMA, FERNANDO SILVA MACEDO, GERÓNIMO MARTÍN CAMPANELLO e LUANE ANTUNES BORGES DOS SANTOS
+para o curso de Tecnologia em Análise e Desenvolvimento de Sistemas (TADS), no seminário tech 2026-1.
+
+---
+
+# Licença
 
 Projeto acadêmico para fins educacionais.
